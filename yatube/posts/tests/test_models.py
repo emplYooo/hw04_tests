@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-
+from constants import NUM_OF_SIMS_POST
 from ..models import Group, Post
 
 User = get_user_model()
@@ -24,7 +24,7 @@ class PostModelTest(TestCase):
     def test_model_post_have_correct_object_names(self):
         """Проверяем, что у модели post корректно работает __str__."""
         post = PostModelTest.post
-        expected_object_name = post.text[:15]
+        expected_object_name = post.text[:NUM_OF_SIMS_POST]
         self.assertEqual(expected_object_name, str(post))
 
     def test_model_group_have_correct_object_names(self):

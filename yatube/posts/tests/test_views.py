@@ -107,8 +107,8 @@ class PaginatorViewsTest(TestCase):
 
     def test_paginator_on_pages(self):
         """Проверка пагинации на страницах."""
-        posts_on_first_page = 10
-        posts_on_second_page = 3
+        POSTS_ON_FIRST_PAGE = 10
+        POSTS_ON_SECOND_PAGE = 3
         url_pages = [
             reverse('posts:index'),
             reverse('posts:group_list', kwargs={'slug': self.group.slug}),
@@ -118,9 +118,9 @@ class PaginatorViewsTest(TestCase):
             with self.subTest(reverse_=reverse_):
                 self.assertEqual(len(self.unauthorized_client.get(
                     reverse_).context.get('page_obj')),
-                    posts_on_first_page
+                    POSTS_ON_FIRST_PAGE
                 )
                 self.assertEqual(len(self.unauthorized_client.get(
                     reverse_ + '?page=2').context.get('page_obj')),
-                    posts_on_second_page
+                    POSTS_ON_SECOND_PAGE
                 )

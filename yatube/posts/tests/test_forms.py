@@ -74,9 +74,9 @@ class PostFormTests(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         post = Post.objects.latest('id')
-        self.assertEqual(post.text == form_data['text'])
-        self.assertEqual(post.author == self.post_author)
-        self.assertEqual(post.group_id == form_data['group'])
+        self.assertEqual(post.text, form_data['text'])
+        self.assertEqual(post.author, self.post_author)
+        self.assertEqual(post.group_id, form_data['group'])
 
     def test_nonauthorized_user_create_post(self):
         """Проверка создания записи не авторизированным пользователем."""

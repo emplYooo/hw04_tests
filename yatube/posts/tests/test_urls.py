@@ -46,8 +46,8 @@ class PostURLTests(TestCase):
         """Страница доступна любому пользователю."""
         url_names = (
             '/',
-            '/group/test-slug/',
-            '/profile/TestAuthor/',
+            f'/group/{self.group.slug}/',
+            f'/profile/{self.author}/',
             f'/posts/{self.post.pk}/',
         )
         for address in url_names:
@@ -90,8 +90,8 @@ class PostURLTests(TestCase):
         """Проверяем, что URL-адрес использует соответствующий шаблон."""
         templates_url_names = {
             'posts/index.html': '/',
-            'posts/group_list.html': '/group/test-slug/',
-            'posts/profile.html': '/profile/TestAuthor/',
+            'posts/group_list.html': f'/group/{self.group.slug}/',
+            'posts/profile.html': f'/profile/{self.author}/',
             'posts/post_detail.html': f'/posts/{self.post.pk}/',
             'posts/create_post.html': '/create/',
         }

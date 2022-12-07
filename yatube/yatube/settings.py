@@ -18,6 +18,12 @@ SECRET_KEY = '7!=tfab2ee#25&qml&un=a+o&hl298$wcu(kvr!jl54=@t&0ch'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -25,6 +31,7 @@ ALLOWED_HOSTS = [
     'testserver',
 ]
 
+CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
 
 # Application definition
 
@@ -39,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +64,9 @@ ROOT_URLCONF = 'yatube.urls'
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 TEMPLATES = [
     {

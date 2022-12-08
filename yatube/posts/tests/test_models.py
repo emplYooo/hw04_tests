@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from constants import NUM_OF_SIMS_POST
-from ..models import Group, Post
+from constants import NUM_OF_SIMS
+
+from ..models import Comment, Follow, Group, Post
 
 User = get_user_model()
 
@@ -11,50 +12,125 @@ class PostModelTest(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
+        cls.post = Post.objects.create(
+            text='Тестовый текст больше 15 символов для проверки...',
+            author=cls.user,
+        )
+
+    def test_post_str(self):
+        """Проверка __str__ у post."""
+        self.assertEqual(self.post.text[:NUM_OF_SIMS], str(self.post))
+
+    def test_post_verbose_name(self):
+        """Проверка verbose_name у post."""
+        field_verboses = {
+            'text': 'Текст поста',
+            'pub_date': 'Дата публикации',
+            'author': 'Автор',
+            'group': 'Группа', }
+        for value, expected in field_verboses.items():
+            with self.subTest(value=value):
+                verbose_name = self.post._meta.get_field(value).verbose_name
+                self.assertEqual(verbose_name, expected)
+
+    def test_post_help_text(self):
+        """Проверка help_text у post."""
+        feild_help_texts = {
+            'text': 'Текст нового поста',
+            'group': 'Группа, к которой будет относиться пост', }
+        for value, expected in feild_help_texts.items():
+            with self.subTest(value=value):
+                help_text = self.post._meta.get_field(value).help_text
+                self.assertEqual(help_text, expected)
+
+
+class GroupModelTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = User.objects.create_user(username='auth')
         cls.group = Group.objects.create(
             title='Тестовая группа',
             slug='Тестовый слаг',
             description='Тестовое описание',
         )
-        cls.post = Post.objects.create(
-            author=cls.user,
-            text='Тестовый пост',
+
+    def test_group_str(self):
+        """Проверка __str__ у group."""
+        self.assertEqual(self.group.title, str(self.group))
+
+    def test_group_verbose_name(self):
+        """Проверка verbose_name у group."""
+        field_verboses = {
+            'title': 'Заголовок',
+            'slug': 'URL',
+            'description': 'Описание',
+        }
+        for value, expected in field_verboses.items():
+            with self.subTest(value=value):
+                verbose_name = self.group._meta.get_field(value).verbose_name
+                self.assertEqual(verbose_name, expected)
+
+
+class FollowModelTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user1 = User.objects.create_user(username='auth1')
+        cls.user2 = User.objects.create_user(username='auth2')
+        cls.follow = Follow.objects.create(
+            user=cls.user1,
+            author=cls.user2,
         )
 
-    def test_model_post_have_correct_object_names(self):
-        """Проверяем, что у модели post корректно работает __str__."""
-        post = PostModelTest.post
-        expected_object_name = post.text[:NUM_OF_SIMS_POST]
-        self.assertEqual(expected_object_name, str(post))
+    def test_follow_str(self):
+        """Проверка __str__ у follow."""
+        self.assertEqual(
+            f'{self.follow.user} подписался на {self.follow.author}',
+            str(self.follow))
 
-    def test_model_group_have_correct_object_names(self):
-        """Проверяем, что у модели group корректно работает __str__."""
-        group = PostModelTest.group
-        expected_object_name = group.title
-        self.assertEqual(expected_object_name, str(group))
-
-    def test_model_post_have_correct_verbose_names(self):
-        """Проверяем, что verbose_name в полях совпадает с ожидаемым."""
-        post = PostModelTest.post
+    def test_follow_verbose_name(self):
+        """Проверка verbose_name у follow."""
         field_verboses = {
-            'text': 'Текст поста',
-            'pub_date': 'Дата публикации',
+            'user': 'Пользователь',
             'author': 'Автор',
-            'group': 'Группа',
         }
-        for field, expected in field_verboses.items():
-            with self.subTest(field=field):
-                self.assertEqual(
-                    post._meta.get_field(field).verbose_name, expected)
+        for value, expected in field_verboses.items():
+            with self.subTest(value=value):
+                verbose_name = self.follow._meta.get_field(value).verbose_name
+                self.assertEqual(verbose_name, expected)
 
-    def test_model_post_have_correct_help_text(self):
-        """Проверяем, что help_text в полях совпадает с ожидаемым."""
-        post = PostModelTest.post
-        field_help_texts = {
-            'text': 'Введите текст поста',
-            'group': 'Группа, к которой будет относиться пост',
+
+class CommentModelTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = User.objects.create_user(username='auth')
+        cls.post = Post.objects.create(
+            text='Тестовый пост',
+            author=cls.user,
+        )
+        cls.comment = Comment.objects.create(
+            text='Комментарий для поста',
+            author=cls.user,
+            post=cls.post,
+        )
+
+    def test_сomment_str(self):
+        """Проверка __str__ у сomment."""
+        self.assertEqual(self.comment.text[:NUM_OF_SIMS], str(self.comment))
+
+    def test_сomment_verbose_name(self):
+        """Проверка verbose_name у сomment."""
+        field_verboses = {
+            'post': 'Пост',
+            'author': 'Автор',
+            'text': 'Коментарий',
+            'created': 'Создан',
+            'updated': 'Обнавлен',
+            'active': 'Активен',
         }
-        for field, expected in field_help_texts.items():
-            with self.subTest(field=field):
-                self.assertEqual(
-                    post._meta.get_field(field).help_text, expected)
+        for value, expected in field_verboses.items():
+            with self.subTest(value=value):
+                verbose_name = self.comment._meta.get_field(value).verbose_name
+                self.assertEqual(verbose_name, expected)

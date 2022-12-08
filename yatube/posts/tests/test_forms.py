@@ -78,7 +78,6 @@ class PostFormTests(TestCase):
         self.assertEqual(post.text, form_data['text'])
         self.assertEqual(post.author, self.post_author)
         self.assertEqual(post.group_id, form_data['group'])
-        self.assertEqual(post.image.name, 'posts/small.gif')
 
     def test_authorized_user_create_comment(self):
         """Проверка создания коментария авторизированным клиентом."""
